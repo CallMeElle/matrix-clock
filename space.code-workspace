@@ -1,0 +1,66 @@
+{
+	"folders": [
+		{
+			"name": "matrix-zeit",
+			"path": "."
+		},
+		{
+			"path": "/home/elle/Arduino/libraries/LedController"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"array": "cpp",
+			"*.tcc": "cpp",
+			"cctype": "cpp",
+			"chrono": "cpp",
+			"clocale": "cpp",
+			"cmath": "cpp",
+			"cstdarg": "cpp",
+			"cstddef": "cpp",
+			"cstdint": "cpp",
+			"cstdio": "cpp",
+			"cstdlib": "cpp",
+			"cstring": "cpp",
+			"ctime": "cpp",
+			"cwchar": "cpp",
+			"cwctype": "cpp",
+			"deque": "cpp",
+			"unordered_map": "cpp",
+			"unordered_set": "cpp",
+			"vector": "cpp",
+			"exception": "cpp",
+			"algorithm": "cpp",
+			"functional": "cpp",
+			"ratio": "cpp",
+			"system_error": "cpp",
+			"tuple": "cpp",
+			"type_traits": "cpp",
+			"fstream": "cpp",
+			"initializer_list": "cpp",
+			"iomanip": "cpp",
+			"iosfwd": "cpp",
+			"istream": "cpp",
+			"limits": "cpp",
+			"memory": "cpp",
+			"mutex": "cpp",
+			"new": "cpp",
+			"ostream": "cpp",
+			"numeric": "cpp",
+			"sstream": "cpp",
+			"stdexcept": "cpp",
+			"streambuf": "cpp",
+			"thread": "cpp",
+			"cinttypes": "cpp",
+			"utility": "cpp",
+			"typeinfo": "cpp"
+		},
+		"C_Cpp.clang_format_fallbackStyle": "LLVM",
+		"C_Cpp.default.cppStandard": "c++14",
+		"C_Cpp.default.cStandard": "c11",
+		"C_Cpp.default.intelliSenseMode": "gcc-arm",
+		"C_Cpp.experimentalFeatures": "Enabled",
+		"C_Cpp.workspaceParsingPriority": "high",
+		"C_Cpp.workspaceSymbols": "All"
+	}
+}
