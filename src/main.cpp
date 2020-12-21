@@ -1,5 +1,4 @@
 #include "digits.hpp"
-#include "wifi_pwd.hpp"
 
 #define CS_topdisplay 15
 
@@ -14,15 +13,9 @@ controller_configuration conf_bottom;
 LedController topdisplay;  
 LedController bottomdisplay;
 
-#include <WiFi.h>
-#include "time.h"
+#include "Time.hpp"
 
-#define TZ_INFO  "WEST-1DWEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00"
-
-const char* ntpServer = "pool.ntp.org";
-const long  gmtOffset_sec = 3600; //3600s = 1 hour -> CET(Central European Time)
-const int   daylightOffset_sec = 3600; //This adds 3600s = 1 hour to the timezone -> CEST(Central European Summer Time)
-const bool summer = false; //This is true if it is summer otherwise it should be false.
+Time timer = Time();
 
 const int controllerSpeedKHZ = 8000;
 
@@ -70,29 +63,6 @@ void displayDots(ByteBlock* data, bool left = true , bool alsoTop = true){
       (*data)[6] |= 0x80;
     }
   }
-}
-
-void update_time(){
-  
-  //connect to WiFi if not connected
-  Serial.printf("Connecting to %s ", ssid);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-      delay(500);
-      Serial.print(".");
-  }
-  Serial.println(" CONNECTED");
-  
-  
-  //init and get the time
-  Serial.println("Getting Time");
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-
-  //disconnect WiFi as it's no longer needed
-  delay(1000);
-  WiFi.disconnect(true);
-  WiFi.mode(WIFI_OFF);
-  
 }
 
 void printLocalTime(){
@@ -162,7 +132,7 @@ void printLocalTime(){
 
   //update time to full hour
   if(timeinfo.tm_min == 0 && timeinfo.tm_hour == 16 && timeinfo.tm_sec == 0){
-    update_time();
+    timer.updateTime();
   } 
 
   if (!RefreshMatrix && timeinfo.tm_min %5 == 1) {
@@ -253,22 +223,8 @@ void setup(){
 
   //delay(10000);
 
-  //Connect to wifi
-  Serial.printf("Connecting to %s ", ssid);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-      delay(500);
-      Serial.print(".");
-  }
-  Serial.println(" CONNECTED");
-  
-  Serial.println("Getting Time");
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-  Serial.println("turning wifi off");
-  //disconnect WiFi as it's no longer needed
-  delay(1000);
-  WiFi.disconnect(true);
-  WiFi.mode(WIFI_OFF);
+  timer.init();
+
 }
 
 void loop(){
