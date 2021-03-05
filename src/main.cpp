@@ -19,8 +19,6 @@ Time timer = Time();
 
 const int controllerSpeedKHZ = 8000;
 
-ByteBlock digits[10];
-
 ByteBlock displayDots(const ByteBlock& data, bool left = true , bool alsoTop = true){
   ByteBlock ret = data;
 
@@ -182,10 +180,6 @@ void setup(){
   Serial.println("Matrix reset");
 
   pinMode(13, OUTPUT);
-    
-  for(unsigned int i = 0;i < 10;i++){
-      digits[i] = digit[i].rotate180();
-  }
 
   /*Serial.println("Rotated ByteBlocks:");
 
