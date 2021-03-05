@@ -6,8 +6,6 @@
 
 #define Segments 4
 
-#define delayTime 200 // Delay between Frames
-
 controller_configuration<Segments,1> conf_top;
 controller_configuration<Segments,1> conf_bottom;
 LedController<Segments,1> topdisplay = LedController<Segments,1>();
@@ -131,19 +129,6 @@ void printLocalTime(){
   }
 
   Serial.println("finished updating time");
-
-  return;
-}
-
-//sets all rows on all displays to 0
-void switchLED(){
-  static bool LEDON = false;
-  if(LEDON){
-    digitalWrite(13, LOW);
-  }else{
-    digitalWrite(13, HIGH);
-  }
-  LEDON = !LEDON;
 }
 
 void setup(){
@@ -178,8 +163,6 @@ void setup(){
   bottomdisplay.clearMatrix();
 
   Serial.println("Matrix reset");
-
-  pinMode(13, OUTPUT);
 
   /*Serial.println("Rotated ByteBlocks:");
 

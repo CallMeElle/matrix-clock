@@ -1,8 +1,8 @@
 #include "Time.hpp"
 
-Time::Time(){}
+Time::Time() noexcept{}
 
-void Time::init(){
+void Time::init() noexcept{
     Serial.printf("Connecting to %s ", pwd::ssid);
     WiFi.begin(pwd::ssid, pwd::password);
     while (WiFi.status() != WL_CONNECTED) {
@@ -20,7 +20,7 @@ void Time::init(){
     WiFi.mode(WIFI_OFF);
 }
 
-Time_format Time::getTime(){
+Time_format Time::getTime() noexcept{
     struct tm timeinfo;
     Time_format currentTime;
 
@@ -39,7 +39,7 @@ Time_format Time::getTime(){
     return currentTime;
 }
 
-void Time::updateTime(){
+void Time::updateTime() noexcept{
     //connect to WiFi if not connected
     Serial.printf("Connecting to %s ", pwd::ssid);
     WiFi.begin(pwd::ssid, pwd::password);

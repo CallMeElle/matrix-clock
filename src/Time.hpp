@@ -30,8 +30,8 @@ private:
     const bool summer = false; //This is true if it is summer otherwise it should be false.
     
 public:
-    Time();
-    void init();
-    Time_format getTime();
-    void updateTime();
+    Time() noexcept;
+    void init() noexcept;
+    Time_format getTime() noexcept;
+    void updateTime() noexcept;
 };
