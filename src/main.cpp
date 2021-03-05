@@ -8,10 +8,10 @@
 
 #define delayTime 200 // Delay between Frames
 
-controller_configuration conf_top;
-controller_configuration conf_bottom;
-LedController topdisplay;  
-LedController bottomdisplay;
+controller_configuration<Segments,1> conf_top;
+controller_configuration<Segments,1> conf_bottom;
+LedController<Segments,1> topdisplay = LedController<Segments,1>();
+LedController<Segments,1> bottomdisplay = LedController<Segments,1>();
 
 #include "Time.hpp"
 
@@ -19,50 +19,30 @@ Time timer = Time();
 
 const int controllerSpeedKHZ = 8000;
 
-ByteBlock* digits;
+ByteBlock digits[10];
 
-void shiftleft (ByteBlock data, ByteBlock* result){
-  if(result == nullptr){
-    return;
-  }
-
-  for(unsigned int row=0;row < 8;row++){
-      (*result)[row] = data[row]>>1;
-  }
-}
-
-void shiftright (ByteBlock data, ByteBlock* result){
-    if(result == nullptr){
-    return;
-  }
-
-  for(unsigned int row=0;row < 8;row++){
-      (*result)[row] = data[row]<<1;
-  }
-}
-
-void displayDots(ByteBlock* data, bool left = true , bool alsoTop = true){
-  if (data == nullptr){
-    return;
-  }
+ByteBlock displayDots(const ByteBlock& data, bool left = true , bool alsoTop = true){
+  ByteBlock ret = data;
 
   if(left){
-    (*data)[1] |= 0x01;
-    (*data)[2] |= 0x01; 
+    ret[1] |= 0x01;
+    ret[2] |= 0x01;
 
     if(alsoTop){
-      (*data)[5] |= 0x01;
-      (*data)[6] |= 0x01;
+      ret[5] |= 0x01;
+      ret[6] |= 0x01;
     }    
   }else{
-    (*data)[1] |= 0x80; 
-    (*data)[2] |= 0x80; 
+    ret[1] |= 0x80;
+    ret[2] |= 0x80;
 
     if(alsoTop){
-      (*data)[5] |= 0x80;
-      (*data)[6] |= 0x80;
+      ret[5] |= 0x80;
+      ret[6] |= 0x80;
     }
   }
+
+  return ret;
 }
 
 void printLocalTime(){
@@ -92,15 +72,15 @@ void printLocalTime(){
   Serial.println("Displaying top row");
       
   topdisplay.displayOnSegment(0,digits[places[3-0]]);
-  
-  shiftleft(digits[places[3-1]], &output);
-  if(timeinfo.tm_sec % 2) displayDots(&output,false);
+
+  output = digits[places[3-1]] << 1;
+  if(timeinfo.tm_sec % 2) output = displayDots(output,false);
   topdisplay.displayOnSegment(1,output);
 
   topdisplay.displayOnSegment(3,digits[places[3-3]]);
-  
-  shiftright(digits[places[3-2]], &output);
-  if(timeinfo.tm_sec % 2) displayDots(&output);
+
+  output = digits[places[3-2]] >> 1;
+  if(timeinfo.tm_sec % 2) output = displayDots(output);
   topdisplay.displayOnSegment(2, output);  
 
   Serial.println("Displaying bottom row");
@@ -114,16 +94,16 @@ void printLocalTime(){
   bottomdisplay.displayOnSegment(0,digits[places[3]]);
   
   Serial.println("displaying segment 1");
-  shiftleft(digits[places[2]], &output);
-  displayDots(&output,false,false);
+  output = digits[places[2]] << 1;
+  output = displayDots(output,false,false);
   bottomdisplay.displayOnSegment(1, output);
 
   Serial.println("displaying segment 3");
   bottomdisplay.displayOnSegment(3,digits[places[0]]);
          
   Serial.println("displaying segment 2");
-  shiftright(digits[places[1]], &output);
-  displayDots(&output,true,false);
+  output = digits[places[1]] >> 1;
+  output = displayDots(output,true,false);
   bottomdisplay.displayOnSegment(2, output); 
 
   Serial.println("finished displaying");
@@ -202,16 +182,14 @@ void setup(){
   Serial.println("Matrix reset");
 
   pinMode(13, OUTPUT);
-
-  digits = new ByteBlock[10];
     
   for(unsigned int i = 0;i < 10;i++){
-    topdisplay.rotate180(digit[i], &(digits[i]));
+      digits[i] = digit[i].rotate180();
   }
 
-  Serial.println("Rotated byteblocks:");
+  /*Serial.println("Rotated ByteBlocks:");
 
-  /*for(unsigned int i = 0;i<10;i++){
+  for(unsigned int i = 0;i<10;i++){
     for(unsigned int j = 0;j<8;j++){
       Serial.printf("\n seg: %i, row %i: %i",i,j,digits[i][j]);
     }
@@ -231,5 +209,4 @@ void loop(){
   Serial.println("\nStarted loop\n");
   delay(500);
   printLocalTime();
-  Serial.println("\nendet loop\n");
 }

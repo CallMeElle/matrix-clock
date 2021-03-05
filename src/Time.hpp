@@ -4,8 +4,8 @@
 
 /**
  * wifi_pwd.hpp & wifi_pwd.cpp define the wifi login by declaring two constant char arrays.
- * const char* pwd::ssid      //the ssid of the router.
- * const char* pwd::password  //the password needed to log into the wifi network.
+ * const char* pwd::ssid     = "some ssid"     //the ssid of the router.
+ * const char* pwd::password = "some password" //the password needed to log into the wifi network.
  */
 #include "wifi_pwd.hpp"
 #include <WiFi.h>
