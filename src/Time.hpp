@@ -14,9 +14,9 @@
 
 class Time_format{
 public:
-    Time_format(){};
-    Time_format(unsigned int _hour, unsigned int _minute, unsigned int _second):hour(_hour),minute(_minute),second(_second){};
-    bool operator==(const Time_format& other){
+    Time_format() noexcept{};
+    Time_format(unsigned int _hour, unsigned int _minute, unsigned int _second) noexcept:hour(_hour),minute(_minute),second(_second){};
+    bool operator==(const Time_format& other) noexcept{
         bool ret = hour == other.hour;
         ret = ret && (minute == other.minute);
         ret = ret && (second == other.second);
