@@ -73,42 +73,38 @@ void printLocalTime(){
     return;
   }*/
 
-  struct tm timeinfo;
-  if(!getLocalTime(&timeinfo)){
-    Serial.println("Failed to obtain time");
-    return;
-  }
+  auto time = timer.getTime();
   
   Serial.println("local time updated");
 
   unsigned int places[4] = {0,0,0,0};
   ByteBlock output = {0,0,0,0,0,0,0,0};
 
-  places[0] = timeinfo.tm_min % 10;
-  places[1] = timeinfo.tm_min / 10 % 10;
-  places[2] = timeinfo.tm_hour % 10;
-  places[3] = timeinfo.tm_hour / 10 % 10;
+  places[0] = time.minute % 10;
+  places[1] = time.minute / 10 % 10;
+  places[2] = time.hour % 10;
+  places[3] = time.hour / 10 % 10;
 
   Serial.println("Displaying top row");
       
   topdisplay.displayOnSegment(0,digits[places[3-0]]);
   
   shiftleft(digits[places[3-1]], &output);
-  if(timeinfo.tm_sec % 2) displayDots(&output,false);
+  if(time.second % 2) displayDots(&output,false);
   topdisplay.displayOnSegment(1,output);
 
   topdisplay.displayOnSegment(3,digits[places[3-3]]);
   
   shiftright(digits[places[3-2]], &output);
-  if(timeinfo.tm_sec % 2) displayDots(&output);
+  if(time.second % 2) displayDots(&output);
   topdisplay.displayOnSegment(2, output);  
 
   Serial.println("Displaying bottom row");
   
-  places[0] = (timeinfo.tm_mon + 1) % 10;
-  places[1] = (timeinfo.tm_mon + 1) / 10 % 10;
-  places[2] = timeinfo.tm_mday % 10;
-  places[3] = timeinfo.tm_mday / 10 % 10;
+  places[0] = (time.month + 1) % 10;
+  places[1] = (time.month + 1) / 10 % 10;
+  places[2] = time.day % 10;
+  places[3] = time.day / 10 % 10;
 
   Serial.println("displaying segment 0");
   bottomdisplay.displayOnSegment(0,digits[places[3]]);
@@ -128,28 +124,12 @@ void printLocalTime(){
 
   Serial.println("finished displaying");
 
-  static bool RefreshMatrix = true; 
-
   //update time to full hour
-  if(timeinfo.tm_min == 0 && timeinfo.tm_hour == 16 && timeinfo.tm_sec == 0){
+  if(time == Time_format(16,0,0)){
     timer.updateTime();
-  } 
-
-  if (!RefreshMatrix && timeinfo.tm_min %5 == 1) {
-    RefreshMatrix = true;
-  }
-
-  if (timeinfo.tm_min %5 == 0 && timeinfo.tm_sec == 0 && RefreshMatrix) {
-    topdisplay.refreshSegment(1);
-    topdisplay.refreshSegment(2);
-
-    if (timeinfo.tm_min %30 == 0){
-      topdisplay.refreshSegment(0);
-      topdisplay.refreshSegment(3);
-      bottomdisplay.refreshSegments();
-    }
     
-    RefreshMatrix = false;
+    topdisplay.refreshSegments();
+    bottomdisplay.refreshSegments();
   }
 
   Serial.println("finished updating time");
@@ -181,9 +161,6 @@ void setup(){
   conf_top.spiTransferSpeed = 10 * controllerSpeedKHZ;
   conf_bottom.spiTransferSpeed = 10 * controllerSpeedKHZ;
 
-  //conf_top.onlySendOnChange = false;
-  //conf_bottom.onlySendOnChange = false;
-
   topdisplay.init(conf_top);
   bottomdisplay.init(conf_bottom);
 
@@ -208,14 +185,6 @@ void setup(){
   for(unsigned int i = 0;i < 10;i++){
     topdisplay.rotate180(digit[i], &(digits[i]));
   }
-
-  Serial.println("Rotated byteblocks:");
-
-  /*for(unsigned int i = 0;i<10;i++){
-    for(unsigned int j = 0;j<8;j++){
-      Serial.printf("\n seg: %i, row %i: %i",i,j,digits[i][j]);
-    }
-  }*/
 
   for(unsigned int i = 0;i < 4;i++){
     topdisplay.displayOnSegment(3-i,digits[0]);    
