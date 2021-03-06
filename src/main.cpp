@@ -17,25 +17,16 @@ Time timer = Time();
 
 const int controllerSpeedKHZ = 8000;
 
-ByteBlock displayDots(const ByteBlock& data, bool left = true , bool alsoTop = true){
-  ByteBlock ret = data;
+ByteBlock generateDots(bool left = true , bool alsoTop = true){
+  ByteBlock ret = ByteBlock();
+  unsigned int shift = left ? 0 : 7;
 
-  if(left){
-    ret[1] |= 0x01;
-    ret[2] |= 0x01;
+  ret[1] |= 0x01 << shift;
+  ret[2] |= 0x01 << shift;
 
-    if(alsoTop){
-      ret[5] |= 0x01;
-      ret[6] |= 0x01;
-    }    
-  }else{
-    ret[1] |= 0x80;
-    ret[2] |= 0x80;
-
-    if(alsoTop){
-      ret[5] |= 0x80;
-      ret[6] |= 0x80;
-    }
+  if (alsoTop){
+      ret[5] |= 0x01 << shift;
+      ret[6] |= 0x01 << shift;
   }
 
   return ret;
@@ -65,13 +56,13 @@ void printLocalTime(){
       
   topdisplay.displayOnSegment(0,digits[places[3-0]]);
   output = digits[places[3-1]] << 1;
-  if(time.second % 2) output = displayDots(output,false);
+  if(time.second % 2) output = output & generateDots(false);
   topdisplay.displayOnSegment(1,output);
 
   topdisplay.displayOnSegment(3,digits[places[3-3]]);
 
   output = digits[places[3-2]] >> 1;
-  if(time.second % 2) output = displayDots(output);
+  if(time.second % 2) output = output & generateDots();
   topdisplay.displayOnSegment(2, output);  
 
   Serial.println("Displaying bottom row");
@@ -86,7 +77,7 @@ void printLocalTime(){
   
   Serial.println("displaying segment 1");
   output = digits[places[2]] << 1;
-  output = displayDots(output,false,false);
+  output = output & generateDots(false,false);
   bottomdisplay.displayOnSegment(1, output);
 
   Serial.println("displaying segment 3");
@@ -94,7 +85,7 @@ void printLocalTime(){
          
   Serial.println("displaying segment 2");
   output = digits[places[1]] >> 1;
-  output = displayDots(output,true,false);
+  output = output & generateDots(true,false);
   bottomdisplay.displayOnSegment(2, output); 
 
   Serial.println("finished displaying");
