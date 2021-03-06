@@ -6,10 +6,8 @@
 
 #define Segments 4
 
-controller_configuration<Segments,1> conf_top;
-controller_configuration<Segments,1> conf_bottom;
-LedController<Segments,1> topdisplay = LedController<Segments,1>();
-LedController<Segments,1> bottomdisplay = LedController<Segments,1>();
+controller_configuration<Segments,2> config;
+LedController<Segments,2> display = LedController<Segments,2>();
 
 #include "Time.hpp"
 
@@ -54,16 +52,16 @@ void printLocalTime(){
 
   Serial.println("Displaying top row");
       
-  topdisplay.displayOnSegment(0,digits[places[3-0]]);
+  display.displayOnSegment(0,1,digits[places[3-0]]);
   output = digits[places[3-1]] << 1;
   if(time.second % 2) output = output & generateDots(false);
-  topdisplay.displayOnSegment(1,output);
+  display.displayOnSegment(1,1,output);
 
-  topdisplay.displayOnSegment(3,digits[places[3-3]]);
+  display.displayOnSegment(3,1,digits[places[3-3]]);
 
   output = digits[places[3-2]] >> 1;
   if(time.second % 2) output = output & generateDots();
-  topdisplay.displayOnSegment(2, output);  
+  display.displayOnSegment(2,1, output);  
 
   Serial.println("Displaying bottom row");
   
@@ -73,20 +71,20 @@ void printLocalTime(){
   places[3] = time.day / 10 % 10;
 
   Serial.println("displaying segment 0");
-  bottomdisplay.displayOnSegment(0,digits[places[3]]);
+  display.displayOnSegment(0,0,digits[places[3]]);
   
   Serial.println("displaying segment 1");
   output = digits[places[2]] << 1;
   output = output & generateDots(false,false);
-  bottomdisplay.displayOnSegment(1, output);
+  display.displayOnSegment(1,0, output);
 
   Serial.println("displaying segment 3");
-  bottomdisplay.displayOnSegment(3,digits[places[0]]);
+  display.displayOnSegment(3,0,digits[places[0]]);
          
   Serial.println("displaying segment 2");
   output = digits[places[1]] >> 1;
   output = output & generateDots(true,false);
-  bottomdisplay.displayOnSegment(2, output); 
+  display.displayOnSegment(2,0, output); 
 
   Serial.println("finished displaying");
 
@@ -94,8 +92,7 @@ void printLocalTime(){
   if(time == Time_format(16,0,0)){
     timer.updateTime();
     
-    topdisplay.refreshSegments();
-    bottomdisplay.refreshSegments();
+    display.refreshSegments();
   }
 
   Serial.println("finished updating time");
@@ -105,34 +102,29 @@ void setup(){
   Serial.begin(115200);
   Serial.println("Start of setup");
 
-  conf_top.SPI_CS = CS_topdisplay;
-  conf_bottom.SPI_CS = CS_bottomdisplay;
+  config.row_SPI_CS[1] = CS_topdisplay;
+  config.row_SPI_CS[0] = CS_bottomdisplay;
 
-  conf_top.useHardwareSpi = true;
-  conf_bottom.useHardwareSpi = true;
+  config.useHardwareSpi = true;
+  config.virtual_multi_row = false;
 
-  conf_top.spiTransferSpeed = 10 * controllerSpeedKHZ;
-  conf_bottom.spiTransferSpeed = 10 * controllerSpeedKHZ;
+  config.spiTransferSpeed = 10 * controllerSpeedKHZ;
+  //config.debug_output = true;
 
-  topdisplay.init(conf_top);
-  bottomdisplay.init(conf_bottom);
+  display.init(config);
 
-  //assert(topdisplay.isInitilized() && bottomdisplay.isInitilized());
+  assert(display.isInitilized());
 
   Serial.println("Controller initilized");
 
-  topdisplay.activateAllSegments();
-  bottomdisplay.activateAllSegments();
+  display.activateAllSegments();
 
-  topdisplay.setIntensity(0);
-  bottomdisplay.setIntensity(0);
-
-  bottomdisplay.clearMatrix();
+  display.setIntensity(0);
 
   Serial.println("Matrix reset");
 
   for(unsigned int i = 0;i < 4;i++){
-    topdisplay.displayOnSegment(3-i,digits[0]);    
+    display.displayOnSegment(3-i,1,digits[0]);    
   } 
 
   //delay(10000);
