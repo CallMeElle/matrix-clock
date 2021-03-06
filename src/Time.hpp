@@ -14,6 +14,22 @@
 
 class Time_format{
 public:
+    Time_format(){};
+    Time_format(unsigned int _hour, unsigned int _minute, unsigned int _second):hour(_hour),minute(_minute),second(_second){};
+    bool operator==(const Time_format& other){
+        bool ret = hour == other.hour;
+        ret = ret && (minute == other.minute);
+        ret = ret && (second == other.second);
+
+        if( !(year == 0 && month == 0 && day == 0) && !(other.year == 0 && other.month == 0 && other.day == 0) ){
+            ret = ret && (year == other.year);
+            ret = ret && (month == other.month);
+            ret = ret && (day == other.day);
+        }
+
+        return ret;
+    }
+
     unsigned int hour = 0;
     unsigned int minute = 0;
     unsigned int second = 0;
