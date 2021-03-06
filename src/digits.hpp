@@ -2,8 +2,8 @@
 
 #include "LedController.hpp"
 
-ByteBlock digit[10] = {
-  {
+ByteBlock digits[10] = {
+  ByteBlock::rotate180({
     B00000000,
     B00011000,
     B00100100,
@@ -12,7 +12,7 @@ ByteBlock digit[10] = {
     B00100100,
     B00011000,
     B00000000
-  }, {
+  }), ByteBlock::rotate180({
     B00000000,
     B00011100,
     B00101100,
@@ -21,7 +21,7 @@ ByteBlock digit[10] = {
     B00001100,
     B00001100,
     B00000000
-  }, {
+  }), ByteBlock::rotate180({
     B00000000,
     B00111000,
     B01101100,
@@ -30,7 +30,7 @@ ByteBlock digit[10] = {
     B01100000,
     B01111110,
     B00000000
-  }, {
+  }), ByteBlock::rotate180({
     B00000000,
     B00111100,
     B01100110,
@@ -39,7 +39,7 @@ ByteBlock digit[10] = {
     B01100110,
     B00111100,
     B00000000
-  },{
+  }), ByteBlock::rotate180({
     B00000000,
     B01100000,
     B01100000,
@@ -48,7 +48,7 @@ ByteBlock digit[10] = {
     B00001000,
     B00001000,
     B00000000
-  }, {
+  }), ByteBlock::rotate180({
     B00000000,
     B01111110,
     B01100000,
@@ -57,7 +57,7 @@ ByteBlock digit[10] = {
     B01100110,
     B00111100,
     B00000000
-  }, {
+  }), ByteBlock::rotate180({
     B00000000,
     B00001100,
     B00111000,
@@ -66,7 +66,7 @@ ByteBlock digit[10] = {
     B01100110,
     B00111100,
     B00000000
-  },{
+  }), ByteBlock::rotate180({
     B00000000,
     B01111110,
     B00000110,
@@ -75,7 +75,7 @@ ByteBlock digit[10] = {
     B00110000,
     B01100000,
     B00000000
-  }, {
+  }), ByteBlock::rotate180({
     B00000000,
     B00111100,
     B00100100,
@@ -84,7 +84,7 @@ ByteBlock digit[10] = {
     B01000010,
     B00111100,
     B00000000
-  }, {
+  }), ByteBlock::rotate180({
     B00000000,
     B00111100,
     B01100110,
@@ -93,5 +93,5 @@ ByteBlock digit[10] = {
     B00011100,
     B00110000,
     B00000000
-  }
+  })
 };

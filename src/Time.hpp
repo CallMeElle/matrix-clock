@@ -4,8 +4,8 @@
 
 /**
  * wifi_pwd.hpp & wifi_pwd.cpp define the wifi login by declaring two constant char arrays.
- * const char* pwd::ssid      //the ssid of the router.
- * const char* pwd::password  //the password needed to log into the wifi network.
+ * const char* pwd::ssid     = "some ssid"     //the ssid of the router.
+ * const char* pwd::password = "some password" //the password needed to log into the wifi network.
  */
 #include "wifi_pwd.hpp"
 #include <WiFi.h>
@@ -14,9 +14,9 @@
 
 class Time_format{
 public:
-    Time_format(){};
-    Time_format(unsigned int _hour, unsigned int _minute, unsigned int _second):hour(_hour),minute(_minute),second(_second){};
-    bool operator==(const Time_format& other){
+    Time_format() noexcept{};
+    Time_format(unsigned int _hour, unsigned int _minute, unsigned int _second) noexcept:hour(_hour),minute(_minute),second(_second){};
+    bool operator==(const Time_format& other) noexcept{
         bool ret = hour == other.hour;
         ret = ret && (minute == other.minute);
         ret = ret && (second == other.second);
@@ -46,8 +46,8 @@ private:
     const bool summer = false; //This is true if it is summer otherwise it should be false.
     
 public:
-    Time();
-    void init();
-    Time_format getTime();
-    void updateTime();
+    Time() noexcept;
+    void init() noexcept;
+    Time_format getTime() noexcept;
+    void updateTime() noexcept;
 };
